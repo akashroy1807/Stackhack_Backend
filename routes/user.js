@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const sha256 = require('sha256');
+const nodemailer = require("nodemailer");
+var otpGenerator = require('otp-generator');
 let User = require('../models/user.model');
 
 router.route('/').get((req,res) => {
