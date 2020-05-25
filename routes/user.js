@@ -12,7 +12,6 @@ router.route('/login').post((req,res) => {
     const email = req.body.email;
     const password = req.body.password;
     const time = new Date();
-    // console.log(sha256(time.toString()));
     User.find({email: email, password: password})
         .then(users => {
             if(!users.length){
@@ -65,7 +64,7 @@ router.route('/check_session').post((req,res) => {
     const token = req.body.token;
     User.find({ sessionToken: token })
         .then(user => {
-            console.log(user);
+            // console.log(user);
             if(user.length === 0){
                 res.json({'message': 'Failed'});
             }
@@ -90,7 +89,7 @@ router.route('/register').post((req,res) => {
     User.find({email: email})
         .then(users => {
             if(users.length){
-                res.json('Username Already Exists');
+                res.json('Email ID Already Exists');
             }
             else{
                 console.log(newUser);
@@ -103,17 +102,16 @@ router.route('/register').post((req,res) => {
 });
 
 router.route('/delete').post((req,res) => {
-    const email = req.body.email;
+    const token = req.body.token;
     const password = req.body.password;
-    const id = req.body.id;
     
-    User.find({email: email, password: password})
+    User.find({sessionToken: token, password: password})
         .then(users => {
             if(!users.length){
                 res.json('No Such User Exists');
             }
             else{
-                User.findByIdAndDelete(req.body.id)
+                User.deleteOne({sessionToken:token})
                 .then(() => res.json('Account deleted'))
                 .catch(err => res.status(400).json('Error:' + err));
             }
