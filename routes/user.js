@@ -72,14 +72,18 @@ router.route('/get_session').post((req,res) => {
 
 router.route('/check_session').post((req,res) => {
     const token = req.body.token;
-    User.find({ sessionToken: token })
+    User.findOne({ sessionToken: token })
         .then(user => {
-            // console.log(user);
-            if(user.length === 0){
+            if(!user){
                 res.json({'message': 'Failed'});
             }
             else{
-                res.json({"message": "Success"});
+                user.lastLoggedIn = new Date();
+                user.save()
+                    .then(() => {
+                        res.json({"message": "Success"});
+                    })
+                    .catch(err => res.status(400).json('Error:' + err));
             }
         })
         .catch(err => res.status(400).json('Error:' + err));
