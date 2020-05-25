@@ -218,4 +218,23 @@ router.route('/forgot_password').post((req,res) => {
         .catch(err => res.status(400).json('Error:' + err));
 });
 
+router.route('/reset_password').post((req,res) => {
+    const resettoken = req.body.token;
+    const newPassword = req.body.newPassword;
+    User.findOne({resetToken: resettoken})
+    .then(user => {
+        if(!user){
+            res.json({"message" : "Failure"});
+        }
+        else{
+            user.password = newPassword;
+            user.resetToken = 'NULL';
+            user.save()
+                .then(() => res.json('Password reset'))
+                .catch(err => res.status(400).json('Error:' + err));
+        }
+    })
+    .catch(err => res.status(400).json('Error:' + err));
+});
+
 module.exports = router;
