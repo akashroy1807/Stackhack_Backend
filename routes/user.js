@@ -134,12 +134,20 @@ router.route('/update_details').post((req,res) => {
 });
 
 router.route('/change_password').post((req,res) => {
-    User.findById(req.body.id)
+    const token = req.body.token;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    User.findOne({sessionToken: token, password: oldPassword})
     .then(user => {
-        user.password = req.body.password;
-        user.save()
-            .then(() => res.json('Password updated'))
-            .catch(err => res.status(400).json('Error:' + err));
+        if(!user){
+            res.json({"message" : "Failure"});
+        }
+        else{
+            user.password = newPassword;
+            user.save()
+                .then(() => res.json('Password updated'))
+                .catch(err => res.status(400).json('Error:' + err));
+        }
     })
     .catch(err => res.status(400).json('Error:' + err));
 });
