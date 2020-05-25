@@ -9,7 +9,8 @@ const userSchema = new Schema({
     email: { type: String, required: true, unique: true, trim: true },
     profilepic: { type: String, required: true },
     sessionToken: { type: String, required: true },
-    lastLoggedIn: {type: Date }
+    lastLoggedIn: {type: Date },
+    location: { type: String, required: true}
 },
 {
     timestamps: true

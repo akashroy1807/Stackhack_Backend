@@ -84,7 +84,8 @@ router.route('/register').post((req,res) => {
     const profilepic = req.body.pic;
     const sessionToken = 'NULL';
     const lastLoggedIn = new Date();
-    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn });
+    const location = req.body.location;
+    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location });
 
     User.find({email: email})
         .then(users => {
