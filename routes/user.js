@@ -119,12 +119,15 @@ router.route('/delete').post((req,res) => {
         .catch(err => res.status(400).json('Error:' + err));
 });
 
-router.route('/change_username').post((req,res) => {
-    User.findById(req.body.id)
+router.route('/update_details').post((req,res) => {
+    const token = req.body.token;
+    User.findOne({sessionToken: token})
     .then(user => {
         user.username = req.body.username;
+        user.profilepic = req.body.pic;
+        user.location = req.body.location;
         user.save()
-            .then(() => res.json('Username updated'))
+            .then(() => res.json('User Details updated'))
             .catch(err => res.status(400).json('Error:' + err));
     })
     .catch(err => res.status(400).json('Error:' + err));
