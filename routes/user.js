@@ -4,6 +4,14 @@ const nodemailer = require("nodemailer");
 var otpGenerator = require('otp-generator');
 let User = require('../models/user.model');
 
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'mindwebsteam@gmail.com',
+        pass: 'zdfczcijuvepcjzs'
+    }
+});
+
 router.route('/').get((req,res) => {
     User.find()
         .then(users => res.json(users))
@@ -75,6 +83,26 @@ router.route('/check_session').post((req,res) => {
             }
         })
         .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/request_otp').post((req,res) => {
+    const email = req.body.email;
+    const otp = otpGenerator.generate(5, { alphabets: false, specialChars: false, upperCase: false });
+        
+    var mailOptions = {
+        from: 'mindwebsteam@gmail.com',
+        to: email,
+        subject: 'StackHack OTP verification',
+        text: 'Your OTP for verification is ' + otp
+    };
+        
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+            res.status(400).json('Error:' + error);
+        } else {
+            res.json({otp : sha256(otp)});
+        }
+    });
 });
 
 router.route('/register').post((req,res) => {
@@ -153,6 +181,5 @@ router.route('/change_password').post((req,res) => {
     })
     .catch(err => res.status(400).json('Error:' + err));
 });
-
 
 module.exports = router;
