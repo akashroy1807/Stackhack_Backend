@@ -12,7 +12,7 @@ router.route('/login').post((req,res) => {
     const email = req.body.email;
     const password = req.body.password;
     const time = new Date();
-    console.log(sha256(time.toString()));
+    // console.log(sha256(time.toString()));
     User.find({email: email, password: password})
         .then(users => {
             if(!users.length){
@@ -56,6 +56,21 @@ router.route('/get_session').post((req,res) => {
                             })
                     })
                     .catch(err => res.status(400).json('Error:' + err));
+            }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/check_session').post((req,res) => {
+    const token = req.body.token;
+    User.find({ sessionToken: token })
+        .then(user => {
+            console.log(user);
+            if(user.length === 0){
+                res.json({'message': 'Failed'});
+            }
+            else{
+                res.json({"message": "Success"});
             }
         })
         .catch(err => res.status(400).json('Error:' + err));
