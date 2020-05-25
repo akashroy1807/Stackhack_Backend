@@ -10,7 +10,8 @@ const userSchema = new Schema({
     profilepic: { type: String, required: true },
     sessionToken: { type: String, required: true },
     lastLoggedIn: {type: Date },
-    location: { type: String, required: true}
+    location: { type: String, required: true},
+    resetToken: { type: String}
 },
 {
     timestamps: true

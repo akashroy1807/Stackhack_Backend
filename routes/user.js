@@ -114,7 +114,8 @@ router.route('/register').post((req,res) => {
     const sessionToken = 'NULL';
     const lastLoggedIn = new Date();
     const location = req.body.location;
-    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location });
+    const resetToken = 'NULL';
+    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken });
 
     User.find({email: email})
         .then(users => {
@@ -180,6 +181,41 @@ router.route('/change_password').post((req,res) => {
         }
     })
     .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/forgot_password').post((req,res) => {
+    const email = req.body.email;
+    const time = new Date();
+    const resetToken = sha256(email + time.toString());
+
+    User.findOne({email : email})
+        .then(user => {
+            if(!user){
+                res.json({"message" : "Invalid Email"});
+            }
+            else{
+                user.resetToken = resetToken;
+                user.save()
+                    .then(() => {
+                        var mailOptions = {
+                            from: 'mindwebsteam@gmail.com',
+                            to: email,
+                            subject: 'Reset Password Link',
+                            html: "Go to the link below to reset your password <br><br><br>" + "<a href='http://127.0.0.1/reset_pass/"+resetToken+"'>Click here</a>"
+                        };
+                            
+                        transporter.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                                res.status(400).json('Error:' + error);
+                            } else {
+                                res.json({"resetToken" : resetToken});
+                            }
+                        });
+                    })
+                    .catch(err => res.status(400).json('Error:' + err));
+            }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
 });
 
 module.exports = router;
