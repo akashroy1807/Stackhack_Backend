@@ -7,8 +7,8 @@ let User = require('../models/user.model');
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'mindwebsteam@gmail.com',
-        pass: 'zdfczcijuvepcjzs'
+        user: 'mindwebsmailer@gmail.com',
+        pass: 'berskfmihfomvowk'
     }
 });
 
@@ -94,7 +94,7 @@ router.route('/request_otp').post((req,res) => {
     const otp = otpGenerator.generate(5, { alphabets: false, specialChars: false, upperCase: false });
         
     var mailOptions = {
-        from: 'mindwebsteam@gmail.com',
+        from: 'mindwebsmailer@gmail.com',
         to: email,
         subject: 'StackHack OTP verification',
         text: 'Your OTP for verification is ' + otp
