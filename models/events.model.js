@@ -14,7 +14,8 @@ const eventSchema = new Schema({
     eventOwner: { type: String, required: true},
     ticketPrice: {type: Number, required: true},
     eventPic: {type: String},
-    status : {type: String, required: true}
+    status : {type: String, required: true},
+    location: {type: String, required: true}
 },
 {
     timestamps: true

@@ -25,6 +25,7 @@ router.route('/add').post((req,res) => {
     const ticketPrice = req.body.ticketPrice;
     const eventPic = req.body.eventPic;
     const status = "active";
+    const location = req.body.location;
     eventId = 0;
     Event.findOne().sort({createdAt: -1})
         .then(last => {
@@ -33,7 +34,7 @@ router.route('/add').post((req,res) => {
             } else {
                 eventId = last.eventId + 1;
             }
-            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventParticipants, eventMaxParticipants, eventOwner, ticketPrice, eventPic, status});
+            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventParticipants, eventMaxParticipants, eventOwner, ticketPrice, eventPic, status, location});
             newEvent.save()
                 .then(() => res.json('Event Saved in Database'))
                 .catch(err => res.status(400).json('Error:' + err));          
@@ -43,7 +44,7 @@ router.route('/add').post((req,res) => {
 });
 
 router.route('/edit').post((req,res) => {
-    Event.findById(req.body.id)
+    Event.findOne({eventId: req.body.id})
     .then(event => {
         event.eventName = req.body.eventName;
         event.eventSummary = req.body.eventSummary;
@@ -55,6 +56,7 @@ router.route('/edit').post((req,res) => {
         event.ticketPrice = req.body.ticketPrice;
         event.eventPic = req.body.eventPic;
         event.status = req.body.status;
+        event.location = req.body.location;
         event.save()
             .then(() => res.json('Event updated'))
             .catch(err => res.status(400).json('Error:' + err));
