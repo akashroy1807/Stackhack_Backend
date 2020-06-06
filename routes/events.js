@@ -20,10 +20,11 @@ router.route('/add').post((req,res) => {
     const eventStartDate = Date.parse(req.body.eventStartDate);
     const eventEndDate = Date.parse(req.body.eventEndDate);
     const eventParticipants = 0;
-    const eventMaxParticipants = req.body.eventMaxParticipants;
+    const eventMaxParticipants = 0;
     const eventOwner = req.body.eventOwner;
-    const ticketPrice = req.body.ticketPrice;
-    const eventPic = req.body.eventPic;
+    const eventSmallPic = req.body.eventSmallPic;
+    const eventHeaderPic = req.body.eventHeaderPic;
+    const eventVideo = req.body.eventVideo;
     const status = "active";
     const location = req.body.location;
     eventId = 0;
@@ -34,9 +35,12 @@ router.route('/add').post((req,res) => {
             } else {
                 eventId = last.eventId + 1;
             }
-            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventParticipants, eventMaxParticipants, eventOwner, ticketPrice, eventPic, status, location});
+            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventParticipants, eventMaxParticipants, eventOwner, eventSmallPic, eventHeaderPic, eventVideo, status, location});
             newEvent.save()
-                .then(() => res.json('Event Saved in Database'))
+                .then(() => res.json({
+                    "message" : "Success",
+                    "eventId" : eventId
+                }))
                 .catch(err => res.status(400).json('Error:' + err));          
         })
         .catch(err => res.status(400).json('Error:' + err));

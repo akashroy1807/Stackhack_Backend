@@ -12,8 +12,9 @@ const eventSchema = new Schema({
     eventParticipants: {type: Number, required: true},
     eventMaxParticipants: {type: Number, required: true},
     eventOwner: { type: String, required: true},
-    ticketPrice: {type: Number, required: true},
-    eventPic: {type: String},
+    eventSmallPic: {type: String},
+    eventHeaderPic: {type: String},
+    eventVideo: {type: String},
     status : {type: String, required: true},
     location: {type: String, required: true}
 },
