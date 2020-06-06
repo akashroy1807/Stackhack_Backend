@@ -234,7 +234,7 @@ router.route('/reset_password').post((req,res) => {
     User.findOne({resetToken: resettoken})
     .then(user => {
         if(!user){
-            res.json({"message" : "Failure"});
+            res.status(204).json({"message" : "Failure"});
         }
         else{
             user.password = newPassword;
