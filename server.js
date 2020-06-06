@@ -25,11 +25,13 @@ const usersRouter = require('./routes/user');
 const eventRouter = require('./routes/events');
 const registerRouter = require('./routes/registration');
 const ticketRouter = require('./routes/ticket');
+const adminRouter = require('./routes/admin');
 
 app.use('/user',usersRouter);
 app.use('/events',eventRouter);
 app.use('/register',registerRouter);
 app.use('/ticket',ticketRouter);
+app.use('/admin',adminRouter);
 
 app.listen(port, () => {
     console.log('Server is running on port:', port);
