@@ -91,28 +91,42 @@ router.route('/check_session').post((req,res) => {
 
 router.route('/request_otp').post((req,res) => {
     const email = req.body.email;
-    const otp = otpGenerator.generate(5, { alphabets: false, specialChars: false, upperCase: false });
+    User.find({email: email})
+        .then(users => {
+            if(users.length){
+                res.status(208).json({
+                    "message": "failure"
+                });
+            }
+            else{
+                const otp = otpGenerator.generate(5, { alphabets: false, specialChars: false, upperCase: false });
         
-    var mailOptions = {
-        from: 'mindwebsmailer@gmail.com',
-        to: email,
-        subject: 'StackHack OTP verification',
-        text: 'Your OTP for verification is ' + otp
-    };
-        
-    transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-            res.status(400).json('Error:' + error);
-        } else {
-            res.json({otp : sha256(otp)});
-        }
-    });
+                var mailOptions = {
+                    from: 'mindwebsmailer@gmail.com',
+                    to: email,
+                    subject: 'StackHack OTP verification',
+                    text: 'Your OTP for verification is ' + otp
+                };
+                    
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        res.status(400).json('Error:' + error);
+                    } else {
+                        res.json({
+                            "message": "success",
+                            "otp": sha256(otp)
+                        });
+                    }
+                });
+            }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
 });
 
 router.route('/register').post((req,res) => {
     const username = req.body.username;
     const password = req.body.password;
-    const role = req.body.role;
+    const role = "user";
     const email = req.body.email;
     const profilepic = req.body.pic;
     const sessionToken = 'NULL';
@@ -121,18 +135,11 @@ router.route('/register').post((req,res) => {
     const resetToken = 'NULL';
     const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken });
 
-    User.find({email: email})
-        .then(users => {
-            if(users.length){
-                res.json('Email ID Already Exists');
-            }
-            else{
-                console.log(newUser);
-                newUser.save()
-                    .then(() => res.json('User Saved in Database'))
-                    .catch(err => res.status(400).json('Error:' + err));
-            }
-        })
+    // console.log(newUser);
+    newUser.save()
+        .then(() => res.json({
+            "message": "Success"
+        }))
         .catch(err => res.status(400).json('Error:' + err));
 });
 

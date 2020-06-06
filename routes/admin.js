@@ -6,7 +6,10 @@ router.route('/get_location').get((req,res) => {
     Location.find()
         .then(locations => {
             locations.map((location) => {
-                locationList.push(location.location);
+                locationList.push({
+                    "location": location.location,
+                    "locationId": location.locationId
+                });
             })
             res.json(locationList);
         })
@@ -36,11 +39,19 @@ router.route('/add_location').post((req,res) => {
                     .catch(err => res.status(400).json('Error:' + err));
             }
             else{
-                res.json({
-                    "message" : "Location exists"
+                res.status(208).json({
+                    "message" : "failure"
                 })
             }
         })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/delete_location').post((req,res) => {
+    Location.deleteOne({locationId: req.body.locationId})
+        .then(() => res.json({
+            "message": 'Success'
+        }))
         .catch(err => res.status(400).json('Error:' + err));
 });
 
