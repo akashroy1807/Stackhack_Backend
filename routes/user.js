@@ -48,11 +48,12 @@ router.route('/get_session').post((req,res) => {
     const token = req.body.token;
     User.find({ sessionToken: token })
         .then(user => {
-            console.log(user);
+            // console.log(user);
             if(user.length === 0){
-                res.json({'message': 'Failed'});
+                res.status(204).json({'message': 'Failed'});
             }
             else{
+                const lastLogin = user[0].lastLoggedIn;
                 user[0].lastLoggedIn = new Date()
                 user[0].save()
                     .then(() => {
@@ -60,7 +61,7 @@ router.route('/get_session').post((req,res) => {
                             {
                                 "username": user[0].username,
                                 "profilepic": user[0].profilepic,
-                                "lastLoggedIn": user[0].lastLoggedIn
+                                "lastLoggedIn": lastLogin
                             })
                     })
                     .catch(err => res.status(400).json('Error:' + err));
@@ -249,7 +250,7 @@ router.route('/reset_password').post((req,res) => {
 
 router.route('/check_reset_token/:token').get((req,res) => {
     const resettoken = req.params.token;
-    console.log(resettoken);
+    // console.log(resettoken);
     User.findOne({resetToken: resettoken})
     .then(user => {
         if(!user){
