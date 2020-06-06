@@ -8,9 +8,9 @@ router.route('/').get((req,res) => {
         .catch(err => res.status(400).json('Error:' + err));
 });
 
-router.route('/:id').get((req,res) => {
+router.route('/get_type/:id').get((req,res) => {
     const eventId = req.params.id;
-    Ticket.findOne({eventId: eventId})
+    Ticket.findOne({eventId: eventId}, 'ticketType')
         .then(ticket => res.json(ticket))
         .catch(err => res.status(400).json('Error:' + err));
 });

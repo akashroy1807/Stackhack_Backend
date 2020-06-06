@@ -25,7 +25,7 @@ router.route('/login').post((req,res) => {
     User.find({email: email, password: password})
         .then(users => {
             if(!users.length){
-                res.json({"message":'Failure'});
+                res.status(206).json({"message":'Failure'});
             }
             else{
                 users[0].sessionToken = sha256(email + time.toString());
@@ -38,8 +38,7 @@ router.route('/login').post((req,res) => {
                         }
                         )
                     )
-                    .catch(err => res.status(400).json('Error:' + err));
-                
+                    .catch(err => res.status(400).json('Error:' + err));    
             }
         })
         .catch(err => res.status(400).json('Error:' + err));
@@ -137,7 +136,7 @@ router.route('/register').post((req,res) => {
 
     // console.log(newUser);
     newUser.save()
-        .then(() => res.json({
+        .then(() => res.status(201).json({
             "message": "Success"
         }))
         .catch(err => res.status(400).json('Error:' + err));
@@ -202,7 +201,7 @@ router.route('/forgot_password').post((req,res) => {
     User.findOne({email : email})
         .then(user => {
             if(!user){
-                res.json({"message" : "Invalid Email"});
+                res.status(204).json({"message" : "Failure"});
             }
             else{
                 user.resetToken = resetToken;
@@ -212,14 +211,14 @@ router.route('/forgot_password').post((req,res) => {
                             from: 'mindwebsteam@gmail.com',
                             to: email,
                             subject: 'Reset Password Link',
-                            html: "Go to the link below to reset your password <br><br><br>" + "<a href='http://127.0.0.1/reset_pass/"+resetToken+"'>Click here</a>"
+                            html: "Go to the link below to reset your password <br><br><br>" + "<a href='http://localhost:4200/set-password/"+resetToken+"'>Click here</a>"
                         };
                             
                         transporter.sendMail(mailOptions, function(error, info){
                             if (error) {
                                 res.status(400).json('Error:' + error);
                             } else {
-                                res.json({"resetToken" : resetToken});
+                                res.json({"message" : "Success"});
                             }
                         });
                     })
@@ -243,6 +242,21 @@ router.route('/reset_password').post((req,res) => {
             user.save()
                 .then(() => res.json('Password reset'))
                 .catch(err => res.status(400).json('Error:' + err));
+        }
+    })
+    .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/check_reset_token/:token').get((req,res) => {
+    const resettoken = req.params.token;
+    console.log(resettoken);
+    User.findOne({resetToken: resettoken})
+    .then(user => {
+        if(!user){
+            res.status(204).json({"message" : "Failure"});
+        }
+        else{
+            res.json({"message" : "Success"});
         }
     })
     .catch(err => res.status(400).json('Error:' + err));
