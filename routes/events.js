@@ -7,8 +7,14 @@ router.route('/').get((req,res) => {
         .catch(err => res.status(400).json('Error:' + err));
 });
 
-router.route('/:id').get((req,res) => {
-    Event.findOne({eventId: req.params.id})
+router.route('/id').post((req,res) => {
+    Event.findOne({eventId: req.body.id})
+        .then(events => res.json(events))
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/location').post((req,res) => {
+    Event.find({location: req.body.location})
         .then(events => res.json(events))
         .catch(err => res.status(400).json('Error:' + err));
 });

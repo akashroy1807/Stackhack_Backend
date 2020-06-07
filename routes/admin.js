@@ -1,6 +1,8 @@
 const router = require('express').Router();
 let Location = require('../models/location.model');
 let User = require('../models/user.model');
+let Event = require('../models/events.model');
+let Register = require('../models/registration.model');
 
 router.route('/get_location').get((req,res) => {
     var locationList = [];
@@ -103,6 +105,14 @@ router.route('/delete_user').post((req,res) => {
                 .then(() => res.json({"message" : "Success"}))
                 .catch(err => res.status(400).json('Error:' + err));
             }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/infos').get((req,res) => {
+    Event.count()
+        .then(eventCount => {
+            res.json(eventCount);
         })
         .catch(err => res.status(400).json('Error:' + err));
 });
