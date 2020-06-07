@@ -52,16 +52,20 @@ router.route('/delete_discount').post((req,res) => {
         .catch(err => res.status(400).json('Error:' + err));
 });
 
-router.route('/add').post((req,res) => {
+router.route('/add_type').post((req,res) => {
     const eventId = req.body.eventId;
-    const ticketType = req.body.ticketType;
-    const discountCode = req.body.discountCode;
+    const ticketTypes = req.body.ticketType;
     const eventParticipants = 0;
     const eventMaxParticipants = 0;
     
-    Event.findOne({eventId: eventId})
-        .then(event => {
-            if(event){
+    Ticket.findOne({eventId: eventId})
+        .then(ticket => {
+            if(!ticket){
+                let discountCode = [];
+                let typeList = [];
+                ticketTypes.id = 1;
+                typeList.push(ticketTypes);
+                let ticketType = typeList;
                 const newTicket = new Ticket({eventId, ticketType, discountCode, eventParticipants, eventMaxParticipants});
                 newTicket.save()
                     .then(() => res.json({
@@ -70,9 +74,63 @@ router.route('/add').post((req,res) => {
                     .catch(err => res.status(400).json('Error:' + err));
             }
             else{
-                res.json({
-                    "message" : "Event ID invalid"
+                let present = false;
+                ticket.ticketType.map((index) => {
+                    if(index.name == ticketTypes.name){
+                        present = true;
+                        res.status(204).json({"message": "Failure"});
+                    }
                 })
+                if(!present){
+                    let length = ticket.ticketType.length;
+                    ticketTypes.id = (length+1);
+                    
+                    Ticket.updateOne({eventId: eventId},{$push: {"ticketType": ticketTypes}})
+                        .then(() => res.json({'message': "Success"}))
+                        .catch(err => res.status(400).json('Error:' + err));
+                }
+            }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/add_discount').post((req,res) => {
+    const eventId = req.body.eventId;
+    const discountCodes = req.body.discountCode;
+    const eventParticipants = 0;
+    const eventMaxParticipants = 0;
+    
+    Ticket.findOne({eventId: eventId})
+        .then(ticket => {
+            if(!ticket){
+                let ticketType = [];
+                let discountList = [];
+                // ticketTypes.id = 1;
+                discountList.push(discountCodes);
+                let discountCode = discountList;
+                const newTicket = new Ticket({eventId, ticketType, discountCode, eventParticipants, eventMaxParticipants});
+                newTicket.save()
+                    .then(() => res.json({
+                        "message" : "Success"
+                    }))
+                    .catch(err => res.status(400).json('Error:' + err));
+            }
+            else{
+                let present = false;
+                ticket.discountCode.map((index) => {
+                    if(index.name == discountCodes.name){
+                        present = true;
+                        res.status(204).json({"message": "Failure"});
+                    }
+                })
+                if(!present){
+                    // let length = ticket.ticketType.length;
+                    // ticketTypes.id = (length+1);
+                    
+                    Ticket.updateOne({eventId: eventId},{$push: {"discountCode": discountCodes}})
+                        .then(() => res.json({'message': "Success"}))
+                        .catch(err => res.status(400).json('Error:' + err));
+                }
             }
         })
         .catch(err => res.status(400).json('Error:' + err));
