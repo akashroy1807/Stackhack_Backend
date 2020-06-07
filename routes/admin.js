@@ -1,5 +1,6 @@
 const router = require('express').Router();
 let Location = require('../models/location.model');
+let User = require('../models/user.model');
 
 router.route('/get_location').get((req,res) => {
     var locationList = [];
@@ -53,6 +54,40 @@ router.route('/delete_location').post((req,res) => {
             "message": 'Success'
         }))
         .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/make_admin').post((req,res) => {
+    const email = req.body.email;
+    User.findOne({email: email})
+    .then(user => {
+        if(!user){
+            res.status(204).json({"message" : "Failure"});
+        }
+        else{
+            user.role = "admin";
+            user.save()
+                .then(() => res.json({"message" : "Success"}))
+                .catch(err => res.status(400).json('Error:' + err));
+        }
+    })
+    .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/remove_admin').post((req,res) => {
+    const email = req.body.email;
+    User.findOne({email: email})
+    .then(user => {
+        if(!user){
+            res.status(204).json({"message" : "Failure"});
+        }
+        else{
+            user.role = "user";
+            user.save()
+                .then(() => res.json({"message" : "Success"}))
+                .catch(err => res.status(400).json('Error:' + err));
+        }
+    })
+    .catch(err => res.status(400).json('Error:' + err));
 });
 
 module.exports = router;

@@ -47,7 +47,7 @@ router.route('/delete_discount').post((req,res) => {
     const eventId = req.body.id;
     const discountName = req.body.discountCode;
     
-    Ticket.update({'eventId': eventId}, {$pull: {'discountCode': {'name': discountName}}})
+    Ticket.updateOne({'eventId': eventId}, {$pull: {'discountCode': {'name': discountName}}})
         .then(() => (res.json({"message": "Success"})))
         .catch(err => res.status(400).json('Error:' + err));
 });
