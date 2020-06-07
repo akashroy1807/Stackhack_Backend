@@ -90,4 +90,21 @@ router.route('/remove_admin').post((req,res) => {
     .catch(err => res.status(400).json('Error:' + err));
 });
 
+router.route('/delete_user').post((req,res) => {
+    const email = req.body.email;
+    
+    User.find({email: email})
+        .then(users => {
+            if(!users.length){
+                res.status(204).json('No Such User Exists');
+            }
+            else{
+                User.deleteOne({email: email})
+                .then(() => res.json({"message" : "Success"}))
+                .catch(err => res.status(400).json('Error:' + err));
+            }
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
 module.exports = router;
