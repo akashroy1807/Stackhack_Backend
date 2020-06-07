@@ -264,4 +264,37 @@ router.route('/check_reset_token/:token').get((req,res) => {
     .catch(err => res.status(400).json('Error:' + err));
 });
 
+router.route('/check_id_card/token').get((req,res) => {
+    User.findOne({sessionToken: req.params.token},'idCard')
+        .then(users => {
+            if(users.idCard == ''){
+                res.status(204).json({"message": "failure"});
+            }
+            else{
+                res.json({"message": "success"});
+            }
+            
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/add_card').post((req,res) => {
+    const sessionToken = req.body.token;
+    const idCard = req.body.card;
+    User.findOne({sessionToken: sessionToken})
+        .then(users => {
+            if(!users){
+                res.status(204).json({"message": "failure"});
+            }
+            else{
+                users.idCard = idCard;
+                users.save()
+                    .then(() => res.json({"message": "Success"}))
+                    .catch(err => res.status(400).json('Error:' + err));
+            }
+            
+        })
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
 module.exports = router;

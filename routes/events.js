@@ -2,7 +2,7 @@ const router = require('express').Router();
 let Event = require('../models/events.model');
 
 router.route('/').get((req,res) => {
-    Event.find({status: "active"},'eventId eventName eventSummary ticketPrice eventPic eventStartDate eventEndDate')
+    Event.find({status: "active"},'eventId eventName eventSummary ticketPrice eventPic eventStartDate eventEndDate location eventSmallPic')
         .then(events => res.json(events))
         .catch(err => res.status(400).json('Error:' + err));
 });

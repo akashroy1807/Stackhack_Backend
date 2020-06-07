@@ -12,7 +12,8 @@ const userSchema = new Schema({
     lastLoggedIn: {type: Date },
     location: { type: String, required: true},
     resetToken: { type: String},
-    mobile: { type: Number, required: true }
+    mobile: { type: Number, required: true },
+    idCard: { type: String}
 },
 {
     timestamps: true
