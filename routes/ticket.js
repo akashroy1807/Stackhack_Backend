@@ -9,10 +9,38 @@ router.route('/').get((req,res) => {
 });
 
 router.route('/get_type/:id').get((req,res) => {
-    const eventId = req.params.id;
-    Ticket.findOne({eventId: eventId}, 'ticketType')
-        .then(ticket => res.json(ticket))
-        .catch(err => res.status(400).json('Error:' + err));
+    var typeList = [];
+    Ticket.findOne({eventId: req.params.id}, 'ticketType')
+    .then(tickets => {
+        tickets.ticketType.map((ticket) => {
+            typeList.push({
+                "name": ticket.name,
+                "price": ticket.price
+            });
+        })
+        res.json(typeList);
+    })
+    .catch(err => res.status(400).json('Error:' + err));
+});
+
+router.route('/get_discount/:id').get((req,res) => {
+    var discountList = [];
+    Ticket.findOne({eventId: req.params.id}, 'discountCode')
+    .then(tickets => {
+        if(!tickets){
+            res.status(204).json({"message": "failure"});
+        }
+        else{
+            tickets.discountCode.map((ticket) => {
+                discountList.push({
+                    "name": ticket.name,
+                    "value": ticket.value
+                });
+            })
+            res.json(discountList);
+        }
+    })
+    .catch(err => res.status(400).json('Error:' + err));
 });
 
 router.route('/add').post((req,res) => {
