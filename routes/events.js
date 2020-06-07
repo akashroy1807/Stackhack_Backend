@@ -19,8 +19,8 @@ router.route('/add').post((req,res) => {
     const eventDescription = req.body.eventDescription;
     const eventStartDate = Date.parse(req.body.eventStartDate);
     const eventEndDate = Date.parse(req.body.eventEndDate);
-    const eventParticipants = 0;
-    const eventMaxParticipants = 0;
+    const eventStartTime = req.body.eventStartTime;
+    const eventEndTime = req.body.eventEndTime;
     const eventOwner = req.body.eventOwner;
     const eventSmallPic = req.body.eventSmallPic;
     const eventHeaderPic = req.body.eventHeaderPic;
@@ -35,7 +35,7 @@ router.route('/add').post((req,res) => {
             } else {
                 eventId = last.eventId + 1;
             }
-            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventParticipants, eventMaxParticipants, eventOwner, eventSmallPic, eventHeaderPic, eventVideo, status, location});
+            const newEvent = new Event({eventId, eventName, eventSummary, eventDescription, eventStartDate, eventEndDate, eventStartTime, eventEndTime, eventOwner, eventSmallPic, eventHeaderPic, eventVideo, status, location});
             newEvent.save()
                 .then(() => res.json({
                     "message" : "Success",

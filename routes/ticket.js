@@ -56,11 +56,13 @@ router.route('/add').post((req,res) => {
     const eventId = req.body.eventId;
     const ticketType = req.body.ticketType;
     const discountCode = req.body.discountCode;
+    const eventParticipants = 0;
+    const eventMaxParticipants = 0;
     
     Event.findOne({eventId: eventId})
         .then(event => {
             if(event){
-                const newTicket = new Ticket({eventId, ticketType, discountCode});
+                const newTicket = new Ticket({eventId, ticketType, discountCode, eventParticipants, eventMaxParticipants});
                 newTicket.save()
                     .then(() => res.json({
                         "message" : "Success"
