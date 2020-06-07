@@ -110,9 +110,37 @@ router.route('/delete_user').post((req,res) => {
 });
 
 router.route('/infos').get((req,res) => {
-    Event.count()
+    var info = {
+        eventCount: 0,
+        ticketCount: 0,
+        paidTicketCount: 0,
+        locationCount: 0,
+        userCount: 0
+    }
+    Event.countDocuments()
         .then(eventCount => {
-            res.json(eventCount);
+            info.eventCount = eventCount;
+            Register.countDocuments()
+            .then(ticketCount => {
+                info.ticketCount = ticketCount;
+                Register.countDocuments({paymentStatus: true})
+                    .then(paidTicketCount => {
+                        info.paidTicketCount = paidTicketCount;
+                        Location.countDocuments()
+                            .then(locationCount => {
+                                info.locationCount = locationCount;
+                                User.countDocuments()
+                                    .then(userCount => {
+                                        info.userCount = userCount;
+                                        res.json({"info": info});
+                                    })
+                                    .catch(err => res.status(400).json('Error:' + err));
+                            })
+                            .catch(err => res.status(400).json('Error:' + err));
+                    })
+                    .catch(err => res.status(400).json('Error:' + err));
+            })
+            .catch(err => res.status(400).json('Error:' + err));
         })
         .catch(err => res.status(400).json('Error:' + err));
 });
