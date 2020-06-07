@@ -133,7 +133,8 @@ router.route('/register').post((req,res) => {
     const lastLoggedIn = new Date();
     const location = req.body.location;
     const resetToken = 'NULL';
-    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken });
+    const mobile = req.body.mobile;
+    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken, mobile });
 
     // console.log(newUser);
     newUser.save()

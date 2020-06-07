@@ -11,7 +11,8 @@ const userSchema = new Schema({
     sessionToken: { type: String, required: true },
     lastLoggedIn: {type: Date },
     location: { type: String, required: true},
-    resetToken: { type: String}
+    resetToken: { type: String},
+    mobile: { type: Number, required: true }
 },
 {
     timestamps: true

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const ticketSchema = new Schema({
-    eventId: { type: Number, required: true },
+    eventId: { type: Number, required: true, unique: true },
     ticketType: [{
         name: { type: String, required: true },
         price: { type: Number, required: true }
