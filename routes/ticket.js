@@ -43,6 +43,15 @@ router.route('/get_discount/:id').get((req,res) => {
     .catch(err => res.status(400).json('Error:' + err));
 });
 
+router.route('/delete_discount').post((req,res) => {
+    const eventId = req.body.id;
+    const discountName = req.body.discountCode;
+    
+    Ticket.update({'eventId': eventId}, {$pull: {'discountCode': {'name': discountName}}})
+        .then(() => (res.json({"message": "Success"})))
+        .catch(err => res.status(400).json('Error:' + err));
+});
+
 router.route('/add').post((req,res) => {
     const eventId = req.body.eventId;
     const ticketType = req.body.ticketType;
