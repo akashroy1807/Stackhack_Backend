@@ -14,6 +14,7 @@ router.route('/get_type/:id').get((req,res) => {
     .then(tickets => {
         tickets.ticketType.map((ticket) => {
             typeList.push({
+                "id": ticket.id,
                 "name": ticket.name,
                 "price": ticket.price
             });
