@@ -134,7 +134,8 @@ router.route('/register').post((req,res) => {
     const location = req.body.location;
     const resetToken = 'NULL';
     const mobile = req.body.mobile;
-    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken, mobile });
+    const idCard = "";
+    const newUser = new User({ username, password, role, email, profilepic, sessionToken, lastLoggedIn, location, resetToken, mobile, idCard });
 
     // console.log(newUser);
     newUser.save()
@@ -264,7 +265,7 @@ router.route('/check_reset_token/:token').get((req,res) => {
     .catch(err => res.status(400).json('Error:' + err));
 });
 
-router.route('/check_id_card/token').get((req,res) => {
+router.route('/check_id_card/:token').get((req,res) => {
     User.findOne({sessionToken: req.params.token},'idCard')
         .then(users => {
             if(users.idCard == ''){
